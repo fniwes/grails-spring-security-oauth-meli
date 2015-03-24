@@ -16,9 +16,23 @@
 package grails.plugin.springsecurity.oauth
 
 import grails.converters.JSON
+import groovy.json.JsonSlurper
 
 class MeliSpringSecurityOAuthService {
+	def oauthService
+
     def createAuthToken(accessToken) {
-        return new MeliOAuthToken(accessToken)
+    	def response = oauthService.getMeliResource(accessToken, 'https://api.mercadolibre.com/users/me', [:], [Accept: "application/json"])
+    	def user
+
+    	try {
+    		user = JSON.parse(response.body)
+    	}
+    	catch(Exception e) {
+    		log.error "Error parsing response from Meli. Response:\n${response.body}"
+    		throw new OAuthLoginException('Error parsing response from Meli', e)
+    	}
+
+        return new MeliOAuthToken(accessToken, user.nickname)
     }
 }

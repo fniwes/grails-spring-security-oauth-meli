@@ -19,11 +19,12 @@ import org.scribe.model.Token
 class MeliOAuthToken extends OAuthToken {
 
     public static final String PROVIDER_NAME = 'meli'
+    private final String screenName = ''
 
-    MeliOAuthToken(Token scribeToken) {
+    MeliOAuthToken(Token scribeToken, String nickname) {
         super(scribeToken)
-        println "Raw Token: ${scribeToken.getRawResponse()}"
         this.principal = this.tokenParams["user_id"]
+        this.screenName = nickname
     }
 
     String getSocialId() {
@@ -31,7 +32,7 @@ class MeliOAuthToken extends OAuthToken {
     }
 
     String getScreenName() {
-        this.principal
+        this.screenName
     }
 
     String getProviderName() {
